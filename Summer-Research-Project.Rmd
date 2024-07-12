@@ -1,6 +1,7 @@
 
 ```{r}
 library(tidyverse)
+library(ggmosaic)
 ```
 
 ```{r}
@@ -19,8 +20,8 @@ dat0 <- laf_open_fwf("XXH2021_YRBS_Data.dat", column_widths=widths$Length, colum
 dat <- dat0[,]; str(dat)
 ```
 
-```{r}
-v2k <- c('Q1',	'Q2',	'Q3',	'Q4',	'RACEETH',	'Q8', 'QN8',	'Q9', 'QN9', 'Q10', 'QN10',	'Q11', 'QN11',	'Q12', 'QN12',	'Q13',	'Q14', 'QN14',	'Q15', 'QN15',	'Q16', 'QN16',	'Q17', 'QN17',	'Q18',	'Q19', 'QN19',	'Q20', 'QN20',	'Q21',	'Q22', 'QN22',	'Q23', 'QN23',	'Q24', 'QN24',	'Q25', 'QN25',	'Q26', 'QN26',	'Q27',	'Q28', 'QN28',	'Q29',	'Q30', 'QN30',	'Q31', 'QN31',	'Q32', 'QN32',	'Q33', 'QN33',	'Q34', 'QN34',	'Q35',	'Q36',	'Q37', 'QN37',	'Q38', 'QN38',	'Q40', 'QN40',	'Q41',	'Q42', 'QN42',	'Q43',	'Q44', 'QN44',	'Q45', 'QN45',	'Q46', 'QN46',	'Q47',	'Q48',	'Q49', 'QN49',	'Q50', 'QN50',	'Q51',	'Q52', 'QN52',	'Q53', 'QN53',	'Q54',	'Q55', 'QN55',	'Q56', 'QN56',	'Q57', 'QN57',	'Q58', 'QN58',	'Q59', 'QN59',	'Q60',	'Q61',	'Q62', 'QN62',	'Q63', 'QN63',	'Q64',	'Q65',	'Q68',	'Q69',	'Q70',	'Q71',	'Q72',	'Q73',	'Q74',	'Q76',	'Q77',	'Q78',	'Q79',	'Q80',	'Q82', 'QN82',	'Q83', 'QN83',	'Q84', 'QN84',	'Q85', 'QN85', 'Q86',	'Q87', 'QN87',	'Q88', 'QN88',	'Q89',	'Q93', 'QN93',	'Q95',	'Q96', 'QN96', 'QN97', 'QN99',	'Q99')
+```{r, includingSubsetOfVariables} 
+v2k <- c('Q1',	'Q2',	'Q3',	'Q4',	'RACEETH',	'Q8', 'QN8',	'Q9', 'QN9', 'Q10', 'QN10',	'Q11', 'QN11',	'Q12', 'QN12',	'Q13',	'Q14', 'QN14',	'Q15', 'QN15',	'Q16', 'QN16',	'Q17', 'QN17',	'Q18',	'Q19', 'QN19',	'Q20', 'QN20',	'Q21',	'Q22', 'QN22',	'Q23', 'QN23',	'Q24', 'QN24',	'Q25', 'QN25',	'Q26', 'QN26',	'Q27',	'Q28', 'QN28',	'Q29',	'Q30', 'QN30',	'Q31', 'QN31',	'Q32', 'QN32',	'Q33', 'QN33',	'Q34', 'QN34',	'Q35',	'Q36',	'Q37', 'QN37',	'Q38', 'QN38',	'Q40', 'QN40',	'Q41',	'Q42', 'QN42',	'Q43',	'Q44', 'QN44',	'Q45', 'QN45',	'Q46', 'QN46',	'Q47',	'Q48',	'Q49', 'QN49',	'Q50', 'QN50',	'Q51',	'Q52', 'QN52',	'Q53', 'QN53',	'Q54',	'Q55', 'QN55',	'Q56', 'QN56',	'Q57', 'QN57',	'Q58', 'QN58',	'Q59', 'QN59',	'Q60',	'Q61',	'Q62', 'QN62',	'Q63', 'QN63',	'Q64',	'Q65',	'Q68',	'Q69',	'Q70',	'Q71',	'Q72',	'Q73',	'Q74',	'Q76',	'Q77',	'Q78',	'Q79',	'Q80',	'Q82', 'QN82',	'Q83', 'QN83',	'Q84', 'QN84',	'Q85', 'QN85', 'Q86',	'Q87', 'QN87',	'Q88', 'QN88',	'Q89',	'Q93', 'QN93',	'Q95',	'Q96', 'QN96', 'QN97', 'QN99', 'Q99')
 ```
 
 ```{r}
@@ -38,6 +39,57 @@ sdat <- dat[,v2k]
 ```{r}
 sdat$Q2 <- factor(sdat$Q2, levels=rev(1:2), labels=rev(c("Female", "Male")))
 sdat$QN85 <- factor(sdat$QN85, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$Q4 <- factor(sdat$Q4, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN8 <- factor(sdat$QN8, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN9 <- factor(sdat$QN9, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN10 <- factor(sdat$QN10, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN11 <- factor(sdat$QN11, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN12 <- factor(sdat$QN12, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN14 <- factor(sdat$QN14, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN15 <- factor(sdat$QN15, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN16 <- factor(sdat$QN16, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN17 <- factor(sdat$QN17, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN19 <- factor(sdat$QN19, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN20 <- factor(sdat$QN20, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN22 <- factor(sdat$QN22, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN23 <- factor(sdat$QN23, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN24 <- factor(sdat$QN24, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN25 <- factor(sdat$QN25, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN26 <- factor(sdat$QN26, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN28 <- factor(sdat$QN28, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN30 <- factor(sdat$QN30, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN31 <- factor(sdat$QN31, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN32 <- factor(sdat$QN32, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN33 <- factor(sdat$QN33, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN34 <- factor(sdat$QN34, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN37 <- factor(sdat$QN37, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN38 <- factor(sdat$QN38, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN40 <- factor(sdat$QN40, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN42 <- factor(sdat$QN42, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN44 <- factor(sdat$QN44, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN45 <- factor(sdat$QN45, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN46 <- factor(sdat$QN46, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN49 <- factor(sdat$QN49, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN50 <- factor(sdat$QN50, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN52 <- factor(sdat$QN52, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN53 <- factor(sdat$QN53, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN55 <- factor(sdat$QN55, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN56 <- factor(sdat$QN56, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN57 <- factor(sdat$QN57, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN58 <- factor(sdat$QN58, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN59 <- factor(sdat$QN59, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN62 <- factor(sdat$QN62, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN82 <- factor(sdat$QN82, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN83 <- factor(sdat$QN83, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN84 <- factor(sdat$QN84, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN87 <- factor(sdat$QN87, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN88 <- factor(sdat$QN88, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN93 <- factor(sdat$QN93, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN96 <- factor(sdat$QN96, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN97 <- factor(sdat$QN97, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN99 <- factor(sdat$QN99, levels=rev(1:2), labels=rev(c("Yes", "No")))
+
+
 ```
 
 ```{r}
@@ -51,5 +103,147 @@ table(sdat$Q2, sdat$QN85, useNA="ifany")
 tab <- table(sdat$Q2, sdat$QN85) 
 ptab <- prop.table(tab); ptab
 ```
+
+Based on the contigency table, females reported having mental health that wasn't good the majority of the time as opposed to males. 
+
+
+```{r}
+chisq.test(tab)
+library(epitools)
+oddsratio(tab)
+```
+
+```{r}
+ci95.p <- function(tab, cix){
+       xx <- apply(tab, 1, function(x){prop.test(x[cix], sum(x), correct=TRUE)})
+       phat <- lapply(xx, function(x){x$estimate})
+       phat.ci <- lapply(xx, function(x){x$conf.int})
+       res <- matrix(NA, nrow=length(phat), ncol=3)
+       colnames(res) <- c("phat", "lcl", "ucl"); rownames(res) <- names(phat)
+       for(i in 1:nrow(res)){
+             res[i,] <- c(phat[[i]], phat.ci[[i]])
+             }
+       res
+       }
+```
+
+```{r}
+bplot.prop <- function(tab, cix, xnames, colr="grey", ylabel, prop=TRUE){
+      if(prop==TRUE){res <- data.frame(ci95.p(tab, cix))}
+      if(prop==FALSE){res <- data.frame(ci95.p(tab, cix))*100}
+      bp <- barplot(res$phat, xlab="", names=xnames, ylab=ylabel, ylim=c(0,max(res)))
+      points(bp, res$phat, pch=16)
+      segments(x0=bp, x1=bp, y0=res$lcl, y1=res$ucl, lwd=2)
+      print(res)
+      }
+```
+
+```{r}
+bplot.prop(tab, cix="Yes", xnames=c("Male", "Female"), ylabel="Percentage experiencing depression", prop=FALSE)
+```
+
+
+```{r}
+ggplot(data = sdat, mapping = aes(x = Q65)) +
+  geom_bar() + 
+  labs(title = "Sexual Identity among YRBS Students", #1=Heterosexual(straight), 2=GayOrLesbian, 3=Bisexual
+       x = "Sexual Identity",                         #
+       y = NULL)
+```
+
+```{r, NewQ65Variable}
+sdat <- sdat %>%
+  mutate(sexual_identity = case_when(Q65 == 1 ~ "Heterosexual (Straight)",
+                                     Q65 == 2 ~ "Gay or Lesbian",
+                                     Q65 == 3 ~ "Bisexual",
+                                     Q65 == 4 ~ "Other Identity",
+                                     TRUE ~ "N/A"))
+```
+
+```{r, CategorizingSexualIdentity}
+ggplot(data = sdat, mapping = aes(x = sexual_identity)) + #put in descending order?? #add color??
+  geom_bar() +                                            #add quantity to bars??
+  labs(title = "Sexual Identity among YRBS Students", 
+       x = "Sexual Identity",
+       y = NULL)
+```
+
+Most students within this dataset identity as Heterosexual (straight). 
+
+
+
+```{r, CategorizingGradeLevel}
+sdat <- sdat %>%
+  mutate(grade_level = case_when(Q3 == 1 ~ "9th",
+                                 Q3 == 2 ~ "10th",
+                                 Q3 == 3 ~ "12th",
+                                 TRUE ~ "Other"))
+```
+
+```{r, GradeDistribution}
+ggplot(data = sdat, mapping = aes(x = grade_level)) + #put into descending order
+  geom_bar() + 
+  labs(title = "Grade Level Counts in YRBS",
+       x = "Grade Level",
+       y = NULL)
+```
+
+The grade level with most participants within the YRBS are 9th graders. 
+
+```{r}
+sdat <- sdat %>%
+  mutate(raceneth = case_when(
+    RACEETH == 1 ~ "Indian/Alaska Native",
+    RACEETH == 2 ~ "Asian",
+    RACEETH == 3 ~ "Black/African American",
+    RACEETH == 4 ~ "Native Hawaiian/Other PI",
+    RACEETH == 5 ~ "White",
+    RACEETH == 6 ~ "Hispanic/Latino",
+    RACEETH == 7 ~ "Multiple - Hispanic",
+    RACEETH == 8 ~ "Multiple - Non-Hispanic",
+    TRUE ~ "Other"
+  ))
+```
+
+```{r, RaceEthnicity}
+ggplot(data = sdat, mapping = aes(y = raceneth)) + 
+  geom_bar() + 
+  labs(x = NULL,
+       y = NULL,
+       title = "Race/Ethnicity Distribution in YRBS")
+```
+
+Students of white race are the most common within the YRBS. 
+
+```{r}
+ggplot(data = sdat) +
+  geom_mosaic(aes(x = product(QN83),
+                  fill = sexual_identity)) +
+  labs(title = "Students Tested for STDs Other than HIV in Past 12 Months",
+       y = "Sexual Identity")
+  
+```
+
+```{r}
+tab <- table(sdat$QN83); tab
+ptab <- prop.table(tab); ptab
+barplot(ptab*100)
+```
+
+94.34% of students were not tested for STDS other than hIV within the last 12 months. 
+
+```{r}
+table(sdat$Q2, sdat$QN83, useNA="ifany")
+tab <- table(sdat$Q2, sdat$QN83) 
+ptab <- prop.table(tab); ptab
+```
+
+
+```{r}
+ggplot(data = sdat, mapping = aes(x = QN82)) + 
+  geom_bar()
+```
+
+
 
 
