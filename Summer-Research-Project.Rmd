@@ -311,11 +311,94 @@ heterosexualdata %>%
 ```
 
 
+```{r, data frame w/ minority individuals only}
+sexualminoritydata<- sdat %>%
+  filter(sexual_identity != "Heterosexual")
+```
 
+```{r}
+print(sexualminoritydata)
+```
 
+```{r}
+sexualminoritydata %>%
+  count(raceneth)
+```
 
+```{r, DrunkDriving}
+sexualminoritydata %>%
+  count(raceneth, QN10)
+```
 
+```{r, TextedWhileDriving}
+sexualminoritydata %>%
+  count(raceneth, QN11)
+```
 
+```{r, CarriedGunSchool}
+sexualminoritydata %>%
+  count(raceneth, QN13)
+```
+
+```{r, AttSuicide}
+sexualminoritydata %>%
+  count(raceneth, QN28)
+```
+
+```{r, ScreenedSTIs}
+sexualminoritydata %>%
+  count(raceneth, QN83)
+```
+
+```{r, CigConsumption}
+sexualminoritydata %>%
+  count(raceneth, QN30)
+```
+
+```{r, CurrentAlcUser}
+sexualminoritydata %>%
+  count(raceneth, QN41)
+```
+
+```{r, #SexualPartners>4}
+sexualminoritydata %>%
+  count(raceneth, QN59)
+```
+
+```{r, mentalHealth}
+sexualminoritydata %>%
+  count(raceneth, QN85)
+```
+
+```{r, PhysHealth}
+sexualminoritydata %>%
+  count(raceneth, QN77)
+```
+
+```{r, FrtIntake}
+sexualminoritydata %>%
+  count(raceneth, QN69)
+```
+
+```{r, VegIntake}
+sexualminoritydata %>%
+  count(raceneth, QN73)
+```
+
+```{r, SleepingAtGuardian }
+sexualminoritydata %>%
+  count(raceneth, QN87)
+```
+
+```{r, WitnessedViolNeighborhood}
+sexualminoritydata %>%
+  count(raceneth, QN18)
+```
+
+```{r, Parent/GuardianAwareOfWhereabout}
+sexualminoritydata %>%
+  count(raceneth, QN97)
+```
 
 
 
