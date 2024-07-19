@@ -2,6 +2,7 @@
 ```{r}
 library(tidyverse)
 library(ggmosaic)
+library(dplyr)
 ```
 
 ```{r}
@@ -21,7 +22,7 @@ dat <- dat0[,]; str(dat)
 ```
 
 ```{r, includingSubsetOfVariables} 
-v2k <- c('Q1',	'Q2',	'Q3',	'Q4',	'RACEETH',	'Q8', 'QN8',	'Q9', 'QN9', 'Q10', 'QN10',	'Q11', 'QN11',	'Q12', 'QN12',	'Q13',	'Q14', 'QN14',	'Q15', 'QN15',	'Q16', 'QN16',	'Q17', 'QN17',	'Q18',	'Q19', 'QN19',	'Q20', 'QN20',	'Q21',	'Q22', 'QN22',	'Q23', 'QN23',	'Q24', 'QN24',	'Q25', 'QN25',	'Q26', 'QN26',	'Q27',	'Q28', 'QN28',	'Q29',	'Q30', 'QN30',	'Q31', 'QN31',	'Q32', 'QN32',	'Q33', 'QN33',	'Q34', 'QN34',	'Q35',	'Q36',	'Q37', 'QN37',	'Q38', 'QN38',	'Q40', 'QN40',	'Q41',	'Q42', 'QN42',	'Q43',	'Q44', 'QN44',	'Q45', 'QN45',	'Q46', 'QN46',	'Q47',	'Q48',	'Q49', 'QN49',	'Q50', 'QN50',	'Q51',	'Q52', 'QN52',	'Q53', 'QN53',	'Q54',	'Q55', 'QN55',	'Q56', 'QN56',	'Q57', 'QN57',	'Q58', 'QN58',	'Q59', 'QN59',	'Q60',	'Q61',	'Q62', 'QN62',	'Q63', 'QN63',	'Q64',	'Q65',	'Q68',	'Q69',	'Q70',	'Q71',	'Q72',	'Q73',	'Q74',	'Q76',	'Q77',	'Q78',	'Q79',	'Q80',	'Q82', 'QN82',	'Q83', 'QN83',	'Q84', 'QN84',	'Q85', 'QN85', 'Q86',	'Q87', 'QN87',	'Q88', 'QN88',	'Q89',	'Q93', 'QN93',	'Q95',	'Q96', 'QN96', 'QN97', 'QN99', 'Q99')
+v2k <- c('Q1',	'Q2',	'Q3',	'Q4',	'RACEETH',	'Q8', 'QN8',	'Q9', 'QN9', 'Q10', 'QN10',	'Q11', 'QN11',	'Q12', 'QN12',	'Q13', 'QN13',	'Q14', 'QN14',	'Q15', 'QN15',	'Q16', 'QN16',	'Q17', 'QN17',	'Q18', 'QN18',	'Q19', 'QN19',	'Q20', 'QN20',	'Q21',	'Q22', 'QN22',	'Q23', 'QN23',	'Q24', 'QN24',	'Q25', 'QN25',	'Q26', 'QN26',	'Q27',	'Q28', 'QN28',	'Q29',	'Q30', 'QN30',	'Q31', 'QN31',	'Q32', 'QN32',	'Q33', 'QN33',	'Q34', 'QN34',	'Q35',	'Q36',	'Q37', 'QN37',	'Q38', 'QN38',	'Q40', 'QN40',	'Q41', 'QN41',	'Q42', 'QN42',	'Q43',	'Q44', 'QN44',	'Q45', 'QN45',	'Q46', 'QN46',	'Q47',	'Q48',	'Q49', 'QN49',	'Q50', 'QN50',	'Q51',	'Q52', 'QN52',	'Q53', 'QN53',	'Q54',	'Q55', 'QN55',	'Q56', 'QN56',	'Q57', 'QN57',	'Q58', 'QN58',	'Q59', 'QN59',	'Q60',	'Q61',	'Q62', 'QN62',	'Q63', 'QN63',	'Q64',	'Q65',	'Q68',	'Q69', 'QN69',	'Q70',	'Q71',	'Q72',	'Q73', 'QN73',	'Q74',	'Q76',	'Q77', 'QN77',	'Q78',	'Q79',	'Q80',	'Q82', 'QN82',	'Q83', 'QN83',	'Q84', 'QN84',	'Q85', 'QN85', 'Q86',	'Q87', 'QN87',	'Q88', 'QN88',	'Q89',	'Q93', 'QN93',	'Q95',	'Q96', 'QN96', 'QN97', 'QN99', 'Q99')
 ```
 
 ```{r}
@@ -45,10 +46,12 @@ sdat$QN9 <- factor(sdat$QN9, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN10 <- factor(sdat$QN10, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN11 <- factor(sdat$QN11, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN12 <- factor(sdat$QN12, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN13 <- factor(sdat$QN13, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN14 <- factor(sdat$QN14, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN15 <- factor(sdat$QN15, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN16 <- factor(sdat$QN16, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN17 <- factor(sdat$QN17, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN18 <- factor(sdat$QN18, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN19 <- factor(sdat$QN19, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN20 <- factor(sdat$QN20, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN22 <- factor(sdat$QN22, levels=rev(1:2), labels=rev(c("Yes", "No")))
@@ -65,6 +68,7 @@ sdat$QN34 <- factor(sdat$QN34, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN37 <- factor(sdat$QN37, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN38 <- factor(sdat$QN38, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN40 <- factor(sdat$QN40, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN41 <- factor(sdat$QN41, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN42 <- factor(sdat$QN42, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN44 <- factor(sdat$QN44, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN45 <- factor(sdat$QN45, levels=rev(1:2), labels=rev(c("Yes", "No")))
@@ -79,9 +83,13 @@ sdat$QN57 <- factor(sdat$QN57, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN58 <- factor(sdat$QN58, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN59 <- factor(sdat$QN59, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN62 <- factor(sdat$QN62, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN69 <- factor(sdat$QN69, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN73 <- factor(sdat$QN73, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN77 <- factor(sdat$QN77, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN82 <- factor(sdat$QN82, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN83 <- factor(sdat$QN83, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN84 <- factor(sdat$QN84, levels=rev(1:2), labels=rev(c("Yes", "No")))
+sdat$QN85 <- factor(sdat$QN85, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN87 <- factor(sdat$QN87, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN88 <- factor(sdat$QN88, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN93 <- factor(sdat$QN93, levels=rev(1:2), labels=rev(c("Yes", "No")))
@@ -107,41 +115,6 @@ ptab <- prop.table(tab); ptab
 Based on the contigency table, females reported having mental health that wasn't good the majority of the time as opposed to males. 
 
 
-```{r}
-chisq.test(tab)
-library(epitools)
-oddsratio(tab)
-```
-
-```{r}
-ci95.p <- function(tab, cix){
-       xx <- apply(tab, 1, function(x){prop.test(x[cix], sum(x), correct=TRUE)})
-       phat <- lapply(xx, function(x){x$estimate})
-       phat.ci <- lapply(xx, function(x){x$conf.int})
-       res <- matrix(NA, nrow=length(phat), ncol=3)
-       colnames(res) <- c("phat", "lcl", "ucl"); rownames(res) <- names(phat)
-       for(i in 1:nrow(res)){
-             res[i,] <- c(phat[[i]], phat.ci[[i]])
-             }
-       res
-       }
-```
-
-```{r}
-bplot.prop <- function(tab, cix, xnames, colr="grey", ylabel, prop=TRUE){
-      if(prop==TRUE){res <- data.frame(ci95.p(tab, cix))}
-      if(prop==FALSE){res <- data.frame(ci95.p(tab, cix))*100}
-      bp <- barplot(res$phat, xlab="", names=xnames, ylab=ylabel, ylim=c(0,max(res)))
-      points(bp, res$phat, pch=16)
-      segments(x0=bp, x1=bp, y0=res$lcl, y1=res$ucl, lwd=2)
-      print(res)
-      }
-```
-
-```{r}
-bplot.prop(tab, cix="Yes", xnames=c("Male", "Female"), ylabel="Percentage experiencing depression", prop=FALSE)
-```
-
 
 ```{r}
 ggplot(data = sdat, mapping = aes(x = Q65)) +
@@ -153,20 +126,28 @@ ggplot(data = sdat, mapping = aes(x = Q65)) +
 
 ```{r, NewQ65Variable}
 sdat <- sdat %>%
-  mutate(sexual_identity = case_when(Q65 == 1 ~ "Heterosexual (Straight)",
+  mutate(sexual_identity = case_when(Q65 == 1 ~ "Heterosexual",
                                      Q65 == 2 ~ "Gay or Lesbian",
                                      Q65 == 3 ~ "Bisexual",
                                      Q65 == 4 ~ "Other Identity",
+                                     Q65 == 5 ~ "Other Identity",
                                      TRUE ~ "N/A"))
 ```
 
 ```{r, CategorizingSexualIdentity}
 ggplot(data = sdat, mapping = aes(x = sexual_identity)) + #put in descending order?? #add color??
-  geom_bar() +                                            #add quantity to bars??
+  geom_bar() +        #add quantity to bars??
+  geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, color = "black")
   labs(title = "Sexual Identity among YRBS Students", 
        x = "Sexual Identity",
        y = NULL)
 ```
+```{r}
+sdat %>%
+  count(sexual_identity)
+```
+
+
 
 Most students within this dataset identity as Heterosexual (straight). 
 
@@ -191,7 +172,7 @@ ggplot(data = sdat, mapping = aes(x = grade_level)) + #put into descending order
 The grade level with most participants within the YRBS are 9th graders. 
 
 ```{r}
-sdat <- sdat %>%
+sdat <- sdat %>% 
   mutate(raceneth = case_when(
     RACEETH == 1 ~ "Indian/Alaska Native",
     RACEETH == 2 ~ "Asian",
@@ -199,8 +180,8 @@ sdat <- sdat %>%
     RACEETH == 4 ~ "Native Hawaiian/Other PI",
     RACEETH == 5 ~ "White",
     RACEETH == 6 ~ "Hispanic/Latino",
-    RACEETH == 7 ~ "Multiple - Hispanic",
-    RACEETH == 8 ~ "Multiple - Non-Hispanic",
+    RACEETH == 7 ~ "Hispanic/Latino",
+    RACEETH == 8 ~ "Other",
     TRUE ~ "Other"
   ))
 ```
@@ -208,6 +189,7 @@ sdat <- sdat %>%
 ```{r, RaceEthnicity}
 ggplot(data = sdat, mapping = aes(y = raceneth)) + 
   geom_bar() + 
+  geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, color = "black")
   labs(x = NULL,
        y = NULL,
        title = "Race/Ethnicity Distribution in YRBS")
@@ -244,6 +226,103 @@ ggplot(data = sdat, mapping = aes(x = QN82)) +
   geom_bar()
 ```
 
-dfvfv
+```{r, data frame w/ hetersexual individuals only}
+heterosexualdata <- sdat %>%
+  filter(sexual_identity == "Heterosexual")
+```
+
+```{r}
+print(heterosexualdata)
+```
+
+```{r}
+heterosexualdata %>%
+  count(raceneth, QN10)
+```
+
+```{r, TextingWHileDriving}
+heterosexualdata %>%
+  count(raceneth, QN11)
+```
+
+```{r, CarriedGunToSchool}
+heterosexualdata %>%
+  count(raceneth, QN13)
+```
+
+```{r, AttemptedSuicide}
+heterosexualdata %>%
+  count(raceneth, QN28)
+```
+
+```{r, ScreenedForSTIs}
+heterosexualdata %>%
+  count(raceneth, QN83)
+```
+
+```{r, CigaretteUsage}
+heterosexualdata %>%
+  count(raceneth, QN30)
+```
+
+```{r, CurrentAlcoholUsers}
+heterosexualdata %>%
+  count(raceneth, QN41)
+```
+
+```{r, SexualPartner#>4}
+heterosexualdata %>%
+  count(raceneth, QN59)
+```
+
+```{r, MentalHealthReports}
+heterosexualdata %>%
+  count(raceneth, QN85)
+```
+
+```{r, PhysicalActivity}
+heterosexualdata %>%
+  count(raceneth, QN77)
+```
+
+```{r, FruitIntake}
+heterosexualdata %>%
+  count(raceneth, QN69)
+```
+
+```{r, VegetableIntake}
+heterosexualdata %>%
+  count(raceneth, QN73)
+```
+
+```{r, SleepingAtGuardian/Parent}
+heterosexualdata %>%
+  count(raceneth, QN87)
+```
+
+```{r, WitnessedViolenceNeighborhood}
+heterosexualdata %>%
+  count(raceneth, QN18)
+```
+
+```{r, ParentsAwareOfWhereabouts}
+heterosexualdata %>%
+  count(raceneth, QN97)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
