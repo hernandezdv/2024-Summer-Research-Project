@@ -3,6 +3,7 @@
 library(tidyverse)
 library(ggmosaic)
 library(dplyr)
+library(epitools)
 ```
 
 ```{r}
@@ -399,6 +400,23 @@ sexualminoritydata %>%
 sexualminoritydata %>%
   count(raceneth, QN97)
 ```
+
+The following will determine crude ORs
+
+```{r}
+sdat$raceneth <- relevel(factor(sdat$raceneth), ref = "White")
+```
+
+
+```{r}
+tab.heterosexualdata <- table(heterosexualdata$raceneth, heterosexualdata$QN10)
+tab.sexualminoritydata <- table(sexualminoritydata$raceneth, sexualminoritydata$QN10)
+```
+
+
+
+
+
 
 
 

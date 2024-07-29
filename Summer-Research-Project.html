@@ -364,7 +364,8 @@ display: none;
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <pre class="r"><code>library(ggmosaic)
-library(dplyr)</code></pre>
+library(dplyr)
+library(epitools)</code></pre>
 <pre class="r"><code>library(LaF)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;LaF&#39;</code></pre>
@@ -15208,6 +15209,10 @@ ptab &lt;- prop.table(tab); ptab</code></pre>
 ## 18                    White   No  191
 ## 19                    White  Yes 1057
 ## 20                    White &lt;NA&gt; 1160</code></pre>
+<p>The following will determine crude ORs</p>
+<pre class="r"><code>sdat$raceneth &lt;- relevel(factor(sdat$raceneth), ref = &quot;White&quot;)</code></pre>
+<pre class="r"><code>tab.heterosexualdata &lt;- table(heterosexualdata$raceneth, heterosexualdata$QN10)
+tab.sexualminoritydata &lt;- table(sexualminoritydata$raceneth, sexualminoritydata$QN10)</code></pre>
 
 
 
