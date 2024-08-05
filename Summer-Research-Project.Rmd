@@ -91,7 +91,6 @@ sdat$QN77 <- factor(sdat$QN77, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN82 <- factor(sdat$QN82, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN83 <- factor(sdat$QN83, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN84 <- factor(sdat$QN84, levels=rev(1:2), labels=rev(c("Yes", "No")))
-sdat$QN85 <- factor(sdat$QN85, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN87 <- factor(sdat$QN87, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN88 <- factor(sdat$QN88, levels=rev(1:2), labels=rev(c("Yes", "No")))
 sdat$QN93 <- factor(sdat$QN93, levels=rev(1:2), labels=rev(c("Yes", "No")))
@@ -424,7 +423,24 @@ sexualminoritydata %>%
 
 ##Analyses 
 
+```{r}
+ovars <- c("QN10", "QN11", "QN13", "QN28", "QN83", "QN30", "QN41", "QN59", "QN77", "QN69", "QN87", "QN18", "QN97")
+```
 
+```{r}
+results <- rep(list(), length=length(ovars)); names(results) <- ovars
+for(i in 1:length(ovars)){
+  tab2 <- table(sdat$sexual_identity2, sdat[,ovars[i]], sdat$raceneth2) 
+  mhors <- epi.2by2(tab2, method="cross.sectional")
+  crude.ors <- mhors$massoc.detail$OR.strata.wald 
+  rownames(crude.ors) <- levels(sdat$raceneth2)  
+  mh.breslow.day <- mhors$massoc.detail$OR.homog.brday 
+  mhadj.or <- mhors$massoc.detail$OR.mh.wald 
+  overall.or <- mhors$massoc.detail$OR.crude.wald 
+  results[[i]] <- list('Crude Stratified ORs'=crude.ors, 'Breslow Day Test'=mh.breslow.day, 'M-H adjusted OR'=mhadj.or, 'Overall OR'=overall.or)
+}
+results
+```
 
 
 
