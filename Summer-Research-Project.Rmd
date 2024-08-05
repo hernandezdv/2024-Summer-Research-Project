@@ -1,24 +1,25 @@
 
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(ggmosaic)
 library(dplyr)
 library(epitools)
+library(epiR)
 ```
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
 library(LaF)
 ```
 
-```{r}
+```{r, echo = FALSE}
 widths <- read.csv("Extracted pages from 2021_YRBS_Data_Users_Guide_508.xlsx - Sheet2.csv", header=TRUE)
 ```
 
-```{r}
+```{r, echo = FALSE}
 dat0 <- laf_open_fwf("XXH2021_YRBS_Data.dat", column_widths=widths$Length, column_names=widths$Variable, column_types=rep("string", nrow(widths)))
 ```
 
-```{r}
+```{r, echo = FALSE}
 dat <- dat0[,]; str(dat)
 ```
 
@@ -125,15 +126,25 @@ ggplot(data = sdat, mapping = aes(x = Q65)) +
        y = NULL)
 ```
 
+
 ```{r, NewQ65Variable}
 sdat <- sdat %>%
   mutate(sexual_identity = case_when(Q65 == 1 ~ "Heterosexual",
-                                     Q65 == 2 ~ "Gay or Lesbian",
-                                     Q65 == 3 ~ "Bisexual",
-                                     Q65 == 4 ~ "Other Identity",
-                                     Q65 == 5 ~ "Other Identity",
-                                     TRUE ~ "N/A"))
+                                 	Q65 == 2 ~ "Gay or Lesbian",
+                                 	Q65 == 3 ~ "Bisexual",
+                                 	Q65 == 4 ~ "Other Identity",
+                                 	Q65 == 5 ~ "Other Identity",
+                                 	TRUE ~ "N/A"))
+#Code creates categorical levels as opposed to only numbers and allows for easier interpretation
 ```
+
+```{r, DichotomousSexIdentVariable}
+sdat$sexual_identity2 <- factor(ifelse(sdat$sexual_identity == "Heterosexual", "Heterosexual", "Sexual Minority"))
+#This creates a dichotomous sexual identity variable 
+```
+
+Although the first code chunk gave each response for Q65 a category/sexual identity, the second dichotomous variable will facilitate the analyses. Since some categories don't have enough data/very few data, there's an issue when running the analyses and the creation of a dichotomous variable allows for fewer and broader categories.
+
 
 ```{r, CategorizingSexualIdentity}
 ggplot(data = sdat, mapping = aes(x = sexual_identity)) + #put in descending order?? #add color??
@@ -186,6 +197,16 @@ sdat <- sdat %>%
     TRUE ~ "Other"
   ))
 ```
+
+```{r}
+sdat$raceneth2 <- factor(ifelse(sdat$raceneth == "White", "White", ifelse(sdat$raceneth == "Black/African American", "Black/AA", ifelse(sdat$raceneth == "Hispanic/Latino", "Hispanic/Latino", "Other"))))
+```
+
+```{r} 
+sdat$raceneth2 <- relevel(sdat$raceneth2, ref="White") #Code makes White individuals the reference (base-line)
+```
+
+The code above creates a new variable with 4 levels as opposed to 7 levels. Like variable Q65, having more levels results in fewer outcomes for each level at the time of analyses which causes troubles in the analyses. Fewer categories allows for larger outcomes in each category. 
 
 ```{r, RaceEthnicity}
 ggplot(data = sdat, mapping = aes(y = raceneth)) + 
@@ -401,17 +422,11 @@ sexualminoritydata %>%
   count(raceneth, QN97)
 ```
 
-The following will determine crude ORs
-
-```{r}
-sdat$raceneth <- relevel(factor(sdat$raceneth), ref = "White")
-```
+##Analyses 
 
 
-```{r}
-tab.heterosexualdata <- table(heterosexualdata$raceneth, heterosexualdata$QN10)
-tab.sexualminoritydata <- table(sexualminoritydata$raceneth, sexualminoritydata$QN10)
-```
+
+
 
 
 
