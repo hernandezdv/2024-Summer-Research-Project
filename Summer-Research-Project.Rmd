@@ -631,6 +631,15 @@ For the outcomes above, I reported and plotted the Mantel-Haenszel (M-H) Adjuste
 
 Reporting the M-H Adjusted ORs provided measures of the overall effect of sexual identity identity on these outcomes while accounting for race/ethnicity. This approach combines data across all ethnic/racial groups and yields a single measure (OR) (with lower and upper bound confidence intervals), giving a clearer picture when the effect doesn't change significantly between groups. 
 
+**QN11 Interpretation:**
+The QN11 dichotomous variable in the YRBSS represents those students who reported texting while driving. Given that the OR is less than 1 (0.78), this means that overall our population of interest (sexual minority students of racial/ethnic minority status) has about 22% lower odds of texting while driving compared to the reference group (White heterosexual students). 
+
+**QN13 Interpretation:**
+QN13 represents those students who reported carrying a gun to school (excluding hunting or sport-related reasons) at least one day in the past 12 months. A M-H adjusted OR of 0.86 indicates that the odds of sexual minority students who're also of minority race/ethnicity have slightly lower odds of carrying a gun to school as opposed to their White counterparts (about 14%).
+
+**QN28 Interpretation:**
+QN28 variable corresponds to the percentage of students who attempted suicide at least once in the past 12 months. A M-H adjusted OR of 3.5 indicates that sexual minority students of minority race/ethnicity experience higher odds of attempting suicide compared to their White counterparts.????
+
 
 
 
