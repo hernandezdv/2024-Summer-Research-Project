@@ -133,14 +133,24 @@ sdat <- sdat %>%
                                  	Q65 == 3 ~ "Bisexual",
                                  	Q65 == 4 ~ "Other Identity",
                                  	Q65 == 5 ~ "Other Identity",
-                                 	TRUE ~ "N/A"))
-#Code creates categorical levels as opposed to only numbers and allows for easier interpretation
+                                  TRUE ~ NA))
 ```
 
 ```{r, DichotomousSexIdentVariable}
 sdat$sexual_identity2 <- factor(ifelse(sdat$sexual_identity == "Heterosexual", "Heterosexual", "Sexual Minority"))
 #This creates a dichotomous sexual identity variable 
 ```
+
+```{r}
+table(sdat$sexual_identity)
+```
+
+```{r}
+table(sdat$sexual_identity2)
+```
+
+
+
 
 Although the first code chunk gave each response for Q65 a category/sexual identity, the second dichotomous variable will facilitate the analyses. Since some categories don't have enough data/very few data, there's an issue when running the analyses and the creation of a dichotomous variable allows for fewer and broader categories.
 
@@ -252,7 +262,7 @@ heterosexualdata <- sdat %>%
   filter(sexual_identity == "Heterosexual")
 ```
 
-```{r}
+```{r, echo = FALSE, results='hide'}
 print(heterosexualdata)
 ```
 
@@ -337,7 +347,7 @@ sexualminoritydata<- sdat %>%
   filter(sexual_identity != "Heterosexual")
 ```
 
-```{r}
+```{r, echo = FALSE, results='hide'}
 print(sexualminoritydata)
 ```
 
@@ -424,7 +434,7 @@ sexualminoritydata %>%
 ##Analyses 
 
 ```{r}
-ovars <- c("QN10", "QN11", "QN13", "QN28", "QN83", "QN30", "QN41", "QN59", "QN77", "QN69", "QN87", "QN18", "QN97")
+ovars <- c("QN10", "QN11", "QN13", "QN28", "QN83", "QN30", "QN41", "QN59", "QN77", "QN69", "QN85", "QN87", "QN18", "QN97")
 ```
 
 ```{r}
@@ -441,6 +451,138 @@ for(i in 1:length(ovars)){
 }
 results
 ```
+
+
+Through the code above, we're able to obtain the M-H Adjusted ORs, Overall ORs, Breslow Day Tests, and Crude Stratified ORs. I used the results from the Breslow Day test(s) to determine if I should report either the M-H Adjusted OR or the Crude Stratifed OR for each outcome of interest. I recorded the results in a [spreadsheet](https://docs.google.com/spreadsheets/d/1fhsCy5VcsFbPUJEsjyiVMxHLLEcGsuXwiwfcx_ZFglQ/edit?gid=433396617#gid=433396617) where the variables are divided by different outcomes of interest such as risky behaviors, health outcomes, and environmental factors. 
+
+## Creating New Data Frames
+
+In the following code, I'll be extracting the Crude Stratified ORs and the M-H Adjusted ORs from the 'results' list from the previous code chunk. I'll create a data frame for each that'll allow me to use ggplot2 for visualizations. 
+
+
+```{r, ExtractingCrudeStratifiedORs}
+#initialize empty data frame
+crude_or_data <- data.frame( #creates data frame w/ columns
+  Variable = character(), #stores the name if the variable from 'ovars' list and is initlizaed as a character (avoids R from treating as factor/category)
+  Strata = character(), #stores the name of the different strata ("White", "Hispanic", etc)
+  OR = numeric(),     #stores ORs as numeric vector
+  CI_lower = numeric(), 
+  CI_upper = numeric(),
+  stringsAsFactors = FALSE #ensures chr vectors aren't automatically turned to factors 
+)
+
+# Loop through 'results' to extract crude stratified ORs
+for(i in 1:length(results)) { #loop goes through each item/variable in the 'results' list
+  crude_ors <- results[[i]]$`Crude Stratified ORs` #pulls out ORs and their conf. intervals
+  strata_names <- rownames(crude_ors)   #pulls the names of the different strata that the ORs are calculated for
+  
+  for(j in 1:nrow(crude_ors)) {   #loop goes through each group within the current variable and pulls out OR for that group
+    crude_or_data <- rbind(crude_or_data, data.frame( #adds a new row to table for each group, rbind allows rws to be added together 
+      Variable = names(results)[i], #adds names of current variable (like "QN10")
+      Strata = strata_names[j],  #adds name of the group (like "Black/AA")
+      OR = crude_ors[j, "est"],  #extract the OR
+      CI_lower = crude_ors[j, "lower"],  #lower CI
+      CI_upper = crude_ors[j, "upper"]   #upper CI
+    ))
+  }
+}
+
+# View the data frame
+print(crude_or_data)
+
+```
+
+```{r, ExtractingMHAdjustedOR}
+# Initialize empty data frame for M-H adjusted ORs
+mhadj_data <- data.frame(
+  Variable = character(),
+  OR = numeric(),
+  CI_lower = numeric(),
+  CI_upper = numeric(),
+  stringsAsFactors = FALSE
+)
+
+# Loop through 'results' to extract M-H adjusted ORs and CIs
+for(i in 1:length(results)) {
+  mhadj_or_data <- results[[i]]$`M-H adjusted OR`
+  mhadj_data <- rbind(mhadj_data, data.frame(
+    Variable = names(results)[i],
+    OR = mhadj_or_data[1],  #extract the OR
+    CI_lower = mhadj_or_data[2],  #extract the lower bound of CI
+    CI_upper = mhadj_or_data[3]   #extract the upper bound of CI
+  ))
+}
+
+# View data frame
+print(mhadj_data)
+
+```
+
+
+## Ploting Crude Stratfied ORs
+
+Question of interest: Does the effect of sexual identity on health outcomes differ across racial identities?
+
+```{r}
+ggplot(crude_or_data, aes(x = Variable, y = OR)) +
+  geom_point(size = 3, color = "black") +  #points for OR
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2, color = "blue") +  #error bars for CI
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +  #line at OR = 1
+  coord_flip() +
+  labs(x = "Variable",
+       y = "Crude Odds Ratio (OR)", 
+       title = "Crude Odds Ratios with 95% Confidence Intervals") +
+  theme_bw() 
+
+```
+
+```{r}
+ggplot(crude_or_data, aes(x = Variable, y = OR, color = Strata, shape = Strata)) +
+  geom_point(size = 3) +  #points for OR
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.7) +  #error bars for CI
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +  #line at OR = 1
+  facet_wrap(~ Strata) +
+  coord_flip() +  #flip coordinates to horizontal plot
+  labs(x = "Outcome(s) of Interest", 
+       y = "Crude Odds Ratio (OR)", 
+       title = "Crude Stratified Odds Ratios by Racial Identity") +
+  theme_linedraw() + 
+  theme(legend.position = "none")
+
+```
+
+```{r}
+crude_selected <- crude_or_data %>% #creates data frame only with those variables I reported Crude ORs for
+  filter(Variable %in% c("QN10", "QN41", "QN85", "QN77", "QN69", "QN97")) #selecting desired variables 
+
+crude_selected %>%
+ggplot(aes(x = Variable, y = OR, color = Strata, shape = Strata)) +
+  geom_point(size = 2.5) +  
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.4) +  #ymin/ymax specifies upper and lower limits of confidence intervals, width = end line width, errorbar = adds error bars to each point rep 95% CI
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") + #horizontal dashed line @ y=1
+  facet_wrap(~ Strata) + #breaks it into diff race/ethnicity/strata
+    coord_flip() +  #changes to horizontal (better visual)
+  labs(x = "Outcome(s) of Interest",
+       y = "Crude Odds Ratio (OR)", 
+       title = "Crude Stratified Odds Ratios by Racial Identity") +
+  theme_linedraw() +
+  theme(legend.position = "none") +
+  geom_text(aes(label = round(OR, 2)),  #text labels w/ OR values rounded to 2 decimal places
+            vjust = -0.5, #move text slightly above points
+            size = 3, #text/label size
+            color = "black")
+```
+
+For the outcomes of interest above, I reported the Stratified Crude ORs because the Breslow-Day test revealed significant differences (with p-values < 0.05) in how sexual identity affects the outcome across different racial groups. Reflecting on the Stratified Crude ORs will provide a clear view of how these effects vary between groups. The Mantel-Haenszel adjusted ORs, which give an overall average, might not accurately reflect these variations and could lead to ignoring important differences. 
+
+QN10 Interpretation: 
+- Black/AA and Hispanic/Latino sexual minority students demonstrate a higher likelihood of drunk driving compared to White heterosexual students. Black/AA sexual minority students show about 2.54 times the odds of drunk driving, and Hispanic/Latino sexual minority students show about 1.64 odds, which is slightly elevated, however not as much as Black/African American students. 
+
+QN41 Interpretation: 
+- 
+
+
+
 
 
 
