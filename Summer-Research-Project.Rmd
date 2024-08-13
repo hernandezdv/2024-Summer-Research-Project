@@ -555,7 +555,8 @@ ggplot(crude_or_data, aes(x = Variable, y = OR, color = Strata, shape = Strata))
   coord_flip() +  #flip coordinates to horizontal plot
   labs(x = "Outcome(s) of Interest", 
        y = "Crude Odds Ratio (OR)", 
-       title = "Crude Stratified Odds Ratios by Racial Identity") +
+       title = "Crude Stratified Odds Ratios by Racial Identity",
+       subtitle = "With 95% Confidence Interval") +
   theme_linedraw() + 
   theme(legend.position = "none")
 
@@ -574,7 +575,7 @@ ggplot(aes(x = Variable, y = OR, color = Strata, shape = Strata)) +
     coord_flip() +  #changes to horizontal (better visual)
   labs(x = "Outcome(s) of Interest",
        y = "Crude Odds Ratio (OR)", 
-       title = "Crude Stratified Odds Ratios by Racial Identity") +
+       title = "Crude Stratified Odds Ratios by Racial Identity (95% CI Included)") +
   theme_linedraw() +
   theme(legend.position = "none") +
   geom_text(aes(label = round(OR, 2)),  #text labels w/ OR values rounded to 2 decimal places
