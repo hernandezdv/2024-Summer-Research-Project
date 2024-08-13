@@ -492,25 +492,32 @@ print(crude_or_data)
 
 ```
 
-```{r, ExtractingMHAdjustedOR}
+```{r}
 # Initialize empty data frame for M-H adjusted ORs
 mhadj_data <- data.frame(
-  Variable = character(),
-  OR = numeric(),
-  CI_lower = numeric(),
-  CI_upper = numeric(),
-  stringsAsFactors = FALSE
+  Variable = character(), 
+  OR = numeric(),         
+  CI_lower = numeric(),   
+  CI_upper = numeric(),   
+  stringsAsFactors = FALSE 
 )
 
 # Loop through 'results' to extract M-H adjusted ORs and CIs
-for(i in 1:length(results)) {
-  mhadj_or_data <- results[[i]]$`M-H adjusted OR`
-  mhadj_data <- rbind(mhadj_data, data.frame(
-    Variable = names(results)[i],
-    OR = mhadj_or_data[1],  #extract the OR
-    CI_lower = mhadj_or_data[2],  #extract the lower bound of CI
-    CI_upper = mhadj_or_data[3]   #extract the upper bound of CI
-  ))
+for(i in 1:length(results)) { #loop goes through each item/variable in the 'results' list
+  mhadj_or_data <- results[[i]]$`M-H adjusted OR` #pulls out the M-H adjusted ORs+CIs for the current variable
+  
+  # Check if mhadj_or_data contains the expected values
+  if(nrow(mhadj_or_data) == 1) {  # Ensure it's a single row data frame
+    mhadj_data <- rbind(mhadj_data, data.frame(
+      Variable = names(results)[i],  #name of the current variable
+      OR = mhadj_or_data$est,  #extract OR from "est"
+      CI_lower = mhadj_or_data$lower,  #extract lower CI bound
+      CI_upper = mhadj_or_data$upper   #extract upper CI bound
+    ))
+  } else {
+    # Warn if data does not match expected format
+    warning(paste("Data for", names(results)[i], "is not in the expected format."))
+  }
 }
 
 # View data frame
@@ -519,7 +526,10 @@ print(mhadj_data)
 ```
 
 
-## Ploting Crude Stratfied ORs
+
+
+
+## Ploting Crude Stratfied Odd Ratios
 
 Question of interest: Does the effect of sexual identity on health outcomes differ across racial identities?
 
@@ -573,18 +583,52 @@ ggplot(aes(x = Variable, y = OR, color = Strata, shape = Strata)) +
             color = "black")
 ```
 
+
 For the outcomes of interest above, I reported the Stratified Crude ORs because the Breslow-Day test revealed significant differences (with p-values < 0.05) in how sexual identity affects the outcome across different racial groups. Reflecting on the Stratified Crude ORs will provide a clear view of how these effects vary between groups. The Mantel-Haenszel adjusted ORs, which give an overall average, might not accurately reflect these variations and could lead to ignoring important differences. 
 
-QN10 Interpretation: 
-- Black/AA and Hispanic/Latino sexual minority students demonstrate a higher likelihood of drunk driving compared to White heterosexual students. Black/AA sexual minority students show about 2.54 times the odds of drunk driving, and Hispanic/Latino sexual minority students show about 1.64 odds, which is slightly elevated, however not as much as Black/African American students. 
+**QN10 Interpretation:**
+Black/AA and Hispanic/Latino sexual minority students demonstrate a higher likelihood of drunk driving compared to White heterosexual students. Black/AA sexual minority students show about 2.54 times the odds of drunk driving, and Hispanic/Latino sexual minority students show about 1.64 odds, which is slightly elevated, however not as much as Black/African American students.
 
-QN41 Interpretation: 
-- 
+**QN41 Interpretation:**
+QN41 represents the percentage of students who drank alcohol (at least one drink) on at least one day during the 30 days before the survey. Compared to their White heterosexual counterparts, all three Strata (Black/AA, Hispanic/Latino and Other Racial groups) demonstrate significantly higher odds of drinking.  
+- Black/AA sexual minority students show about 2.31 higher odds of drinking alcohol compared to White heterosexual students
+- Hispanic/Latino sexual minority students show about 1.50 higher odds of drinking alcohol compared to White heterosexual students
+- Other Racial/Ethnic sexual minority groups (including Pacific Islanders and Native Americans) show roughly 1.62 higher odds of drinking compared to White heterosexual students
+
+**QN85 Interpretation**
+QN85 regards students who reported that their mental health was not good (including stress, anxiety, and depression) most of the time or always during the 30 days before the survey. For all three strata (Black/AA, Hispanic/Latino, and Other racial/ethnic groups) there is a statistically significant association with reporting poor mental health, as demonstrated by their confidence intervals not crossing 1 (1 represents no difference at all).
+- Hispanic/Latino sexual minority students 
+
+**QN97 Interpretation**
+QN97 represents the percentage of students who reported that their parents or other adults in their family most of the time or always know where they are going or with whom they will be. The crude stratified ORs for Black/AA, Hispanic/Latino and other racial/ethnic groups show no strong evidence/statistical significance that these strata differ from White students (since the confidence interval for each includes 1). However, when looking at the plots above, it seems that White students are slightly less likely to report that their parent(s)/guardian always know whom they're with. 
 
 
+## Plotting Mantel-Haenszel Adjusted Odd Ratios
 
+```{r}
+mhadj_selected <- mhadj_data %>%
+  filter(Variable %in% c("QN11", "QN13", "QN28", "QN83", "QN30", "QN59", "QN87", "QN18"))
 
+mhadj_selected %>%
+  ggplot(aes(x = Variable, y = OR)) +
+  geom_point(size = 4, color = "blue") +  
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.5, color = "blue") +  #error bars for CI
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +  #line at OR = 1
+  coord_flip() +  #flip coordinates to make horizontal
+  labs(x = "Outcome(s) of Interest",
+       y = "Mantel-Haenszel Adjusted Odds Ratio (OR)", 
+       title = "Mantel-Haenszel Adjusted Odds Ratios with 95% Confidence Intervals") +
+  theme_bw() + 
+   geom_text(aes(label = round(OR, 2)),  #text labels w/ OR values rounded to 2 decimal places
+            vjust = -1, #move text slightly above points
+            size = 3, #text/label size
+            color = "black")
+  
+```
 
+For the outcomes above, I reported and plotted the Mantel-Haenszel (M-H) Adjusted ORs because the Breslow Day test yielded p-values greater than 0.05 for each, indicating no statistical significance between sexual identity and race/ethnicity on these outcomes. 
+
+Reporting the M-H Adjusted ORs provided measures of the overall effect of sexual identity identity on these outcomes while accounting for race/ethnicity. This approach combines data across all ethnic/racial groups and yields a single measure (OR) (with lower and upper bound confidence intervals), giving a clearer picture when the effect doesn't change significantly between groups. 
 
 
 
