@@ -160,7 +160,7 @@ ggplot(data = sdat, mapping = aes(x = sexual_identity)) + #put in descending ord
   geom_bar() +        #add quantity to bars??
   geom_text(aes(label = ..count..), stat = "count", vjust = 1.5, color = "black")
   labs(title = "Sexual Identity among YRBS Students", 
-       x = "Sexual Identity",
+       x = NULL,
        y = NULL)
 ```
 ```{r}
@@ -564,7 +564,13 @@ ggplot(crude_or_data, aes(x = Variable, y = OR, color = Strata, shape = Strata))
 
 ```{r}
 crude_selected <- crude_or_data %>% #creates data frame only with those variables I reported Crude ORs for
-  filter(Variable %in% c("QN10", "QN41", "QN85", "QN77", "QN69", "QN97")) #selecting desired variables 
+  filter(Variable %in% c("QN10", "QN41", "QN85", "QN77", "QN69", "QN97")) %>% #selecting desired variables 
+  mutate(Variable = case_when(Variable == "QN10" ~ " (b) Drunk Driving (QN10)",
+                              Variable == "QN41" ~ " (a) Alcohol Consumption (QN41)",
+                              Variable == "QN85" ~ " (e) Poor Mental Health (QN85)",
+                              Variable == "QN77" ~ " (f) Poor Physical Health (QN77)",
+                              Variable == "QN69" ~ " (c) Fruit Intake (QN69)",
+                              Variable == "QN97" ~ " (d) Parental Awareness (QN97)"))
 
 crude_selected %>%
 ggplot(aes(x = Variable, y = OR, color = Strata, shape = Strata)) +
@@ -584,31 +590,63 @@ ggplot(aes(x = Variable, y = OR, color = Strata, shape = Strata)) +
             color = "black")
 ```
 
+```{r}
+ggplot(data = crude_selected, aes(x = Strata, y = OR, color = Strata, shape = Strata)) +
+  geom_point(size = 2.5) +
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.4) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+    geom_text(aes(label = round(OR, 2)),  #text labels w/ OR values rounded to 2 decimal places
+            vjust = -0.5, #move text slightly above points
+            size = 3, #text/label size
+            color = "black") +
+  facet_wrap(~ Variable) +
+  coord_flip() +
+  labs(title = "Crude Stratified ORs for Different Outcomes",
+       x = NULL,
+       y = "Crude Odds Ratio (OR)",
+       caption = "Figure 12: Odds ratios describing the relationship between sexual identity and select health outcomes, stratified by race/ethnicity.") +
+  theme_linedraw() + 
+   theme(legend.position = "none")
+```
+
+
 
 For the outcomes of interest above, I reported the Stratified Crude ORs because the Breslow-Day test revealed significant differences (with p-values < 0.05) in how sexual identity affects the outcome across different racial groups. Reflecting on the Stratified Crude ORs will provide a clear view of how these effects vary between groups. The Mantel-Haenszel adjusted ORs, which give an overall average, might not accurately reflect these variations and could lead to ignoring important differences. 
 
-**QN10 Interpretation:**
-Black/AA and Hispanic/Latino sexual minority students demonstrate a higher likelihood of drunk driving compared to White heterosexual students. Black/AA sexual minority students show about 2.54 times the odds of drunk driving, and Hispanic/Latino sexual minority students show about 1.64 odds, which is slightly elevated, however not as much as Black/African American students.
 
-**QN41 Interpretation:**
-QN41 represents the percentage of students who drank alcohol (at least one drink) on at least one day during the 30 days before the survey. Compared to their White heterosexual counterparts, all three Strata (Black/AA, Hispanic/Latino and Other Racial groups) demonstrate significantly higher odds of drinking.  
-- Black/AA sexual minority students show about 2.31 higher odds of drinking alcohol compared to White heterosexual students
-- Hispanic/Latino sexual minority students show about 1.50 higher odds of drinking alcohol compared to White heterosexual students
-- Other Racial/Ethnic sexual minority groups (including Pacific Islanders and Native Americans) show roughly 1.62 higher odds of drinking compared to White heterosexual students
+**(a)** QN41 represents the percentage of students who drank alcohol (at least one drink) on at least one day during the 30 days before the survey. Unlike White sexual minority students in the YRBSS, sexual minorities of Black/AA, Hispanic/Latino and Other racial groups experienced 2.31, 1.5, and 1.52 odds of alcohol consumption, compared to heterosexual students in their respective ethnicity/group. 
 
-**QN85 Interpretation**
-QN85 regards students who reported that their mental health was not good (including stress, anxiety, and depression) most of the time or always during the 30 days before the survey. For all three strata (Black/AA, Hispanic/Latino, and Other racial/ethnic groups) there is a statistically significant association with reporting poor mental health, as demonstrated by their confidence intervals not crossing 1 (1 represents no difference at all).
-- Hispanic/Latino sexual minority students 
 
-**QN97 Interpretation**
-QN97 represents the percentage of students who reported that their parents or other adults in their family most of the time or always know where they are going or with whom they will be. The crude stratified ORs for Black/AA, Hispanic/Latino and other racial/ethnic groups show no strong evidence/statistical significance that these strata differ from White students (since the confidence interval for each includes 1). However, when looking at the plots above, it seems that White students are slightly less likely to report that their parent(s)/guardian always know whom they're with. 
+**(b)** QN10 represents the percentage of students who drove after drinking alcohol at least once in the past 30 days, among those who had driven during that period. Based on Figure 12, Black/AA, Hispanic/Latino, and Other sexual minority teens experienced 2.54, 1.64 and 1.67 odds of drunk driving, respectively, compared to heterosexual teens in their respective race/ethnicity group. 
+
+**(c)** QN69 represents the percentage of students who did not eat fruit at least once in the 7 days before the survey. White and Other sexual minority students experienced 1.52 and 1.37 odds of not consuming fruit as compared to heterosexual students in their respective ethnicty/group. Based on Figure 12, there seems to be no significant difference in Hispanic/Latino and Black/AA sexual minority students compared to their respective race/ethnicity groups. 
+
+**(d)** QN97 represents the percentage of students who reported that their parents or other adults in their family most of the time or always know where they are going or with whom they will be. Based on Figure 12, White sexual minority students experienced 0.71 times the odds (29% lower odds) that their parent/guardian knew where they were going to be, compared to their heterosexual White peers. There seems to be no significant change between the other sexual minority groups (Black/AA, Hispanic/Latino, Other) and their respective heterosexual groups. 
+
+**(e)** QN85 refers to students who reported that their mental health was not good (including stress, anxiety, and depression) most or all of the time during the 30 days before the survey. All sexual minority race/ethnicities experienced higher odds of poor mental health compared to their respective heterosexual groups. 
+
+- Black/AA sexual minorities experienced 2.95 times the odds of poor mental health compared to Black/AA heterosexual students. 
+- Hispanic/Latino sexual minorities experienced 4.3 times the odds of poor mental health compared to Hispanic/latino heterosexual students. 
+- Other sexual minorities experienced 3.48 times the odds of poor mental health compared to Hispanic/Latino heterosexual students.
+- White sexual minorities experienced 4.16 times the odds of poor mental health compared to White heterosexual students.
+  
+**(f)** QN77 represents the percentage of students who were physically active at least 60 minutes per day on 5 or more days. All sexual minorities experienced lower odds of being physically active than their respective heterosexual groups. 
 
 
 ## Plotting Mantel-Haenszel Adjusted Odd Ratios
 
 ```{r}
 mhadj_selected <- mhadj_data %>%
-  filter(Variable %in% c("QN11", "QN13", "QN28", "QN83", "QN30", "QN59", "QN87", "QN18"))
+  filter(Variable %in% c("QN11", "QN13", "QN28", "QN83", "QN30", "QN59", "QN87", "QN18")) %>%
+  mutate(Variable = case_when(Variable == "QN11" ~ "(a) Texting While Driving (QN11)",
+                              Variable == "QN13" ~ "(b) Gun on Campus (QN13)",
+                              Variable == "QN18" ~ "(c) Violence in Neighborhood (QN18),",
+                              Variable == "QN28" ~ "(d) Attempted Suicide (QN28)",
+                              Variable == "QN30" ~ "(e) Drug Use (QN30)",
+                              Variable == "QN59" ~ "(f) Sexual Partner # (QN59)",
+                              Variable == "QN83" ~ "(g) STI Screening (QN83)",
+                              Variable == "QN87" ~ "(h) Parental Support/Housing (QN87)"))
+                              
 
 mhadj_selected %>%
   ggplot(aes(x = Variable, y = OR)) +
@@ -616,9 +654,10 @@ mhadj_selected %>%
   geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.5, color = "blue") +  #error bars for CI
   geom_hline(yintercept = 1, linetype = "dashed", color = "red") +  #line at OR = 1
   coord_flip() +  #flip coordinates to make horizontal
-  labs(x = "Outcome(s) of Interest",
+  labs(x = NULL,
        y = "Mantel-Haenszel Adjusted Odds Ratio (OR)", 
-       title = "Mantel-Haenszel Adjusted Odds Ratios with 95% Confidence Intervals") +
+       title = "Mantel-Haenszel Adjusted Odds Ratios with 95% CI",
+       caption = "Figure 13: M-H ORs describing the relationship between sexual identity and select health outcomes, across all race/ethnicties") +
   theme_bw() + 
    geom_text(aes(label = round(OR, 2)),  #text labels w/ OR values rounded to 2 decimal places
             vjust = -1, #move text slightly above points
@@ -627,18 +666,25 @@ mhadj_selected %>%
   
 ```
 
-For the outcomes above, I reported and plotted the Mantel-Haenszel (M-H) Adjusted ORs because the Breslow Day test yielded p-values greater than 0.05 for each, indicating no statistical significance between sexual identity and race/ethnicity on these outcomes. 
+For the outcomes above, I reported and plotted the Mantel-Haenszel (M-H) Adjusted ORs because the Breslow Day test yielded p-values greater than 0.05 for each, indicating no statistical significance between race/ethnicity on these outcomes. M-H Adjusted OR essentially gives an average odds ratio across all races. This approach combines the data across all ethnic/racial groups and yields a single measure (OR) with lower and upper confidence intervals. 
 
-Reporting the M-H Adjusted ORs provided measures of the overall effect of sexual identity identity on these outcomes while accounting for race/ethnicity. This approach combines data across all ethnic/racial groups and yields a single measure (OR) (with lower and upper bound confidence intervals), giving a clearer picture when the effect doesn't change significantly between groups. 
 
-**QN11 Interpretation:**
-The QN11 dichotomous variable in the YRBSS represents those students who reported texting while driving. Given that the OR is less than 1 (0.78), this means that overall our population of interest (sexual minority students of racial/ethnic minority status) has about 22% lower odds of texting while driving compared to the reference group (White heterosexual students). 
+**(a)** QN11 in the YRBSS represents those students who reported texting while driving. Given that the OR is less than 1 (0.78), this means that overall our population of interest (sexual minority students of racial/ethnic minority status) experienced about 22% lower odds of texting while driving compared to heterosexual students in their respective race/ethnic groups.  
 
-**QN13 Interpretation:**
-QN13 represents those students who reported carrying a gun to school (excluding hunting or sport-related reasons) at least one day in the past 12 months. A M-H adjusted OR of 0.86 indicates that the odds of sexual minority students who're also of minority race/ethnicity have slightly lower odds of carrying a gun to school as opposed to their White counterparts (about 14%).
+**(b)** QN13 represents those students who reported carrying a gun to school (excluding hunting or sport-related reasons) at least one day in the past 12 months. A M-H OR of 0.86 indicates that sexual minority students experienced 14% lower odds of carrying a gun to school relative to heterosexual students. 
 
-**QN28 Interpretation:**
-QN28 variable corresponds to the percentage of students who attempted suicide at least once in the past 12 months. A M-H adjusted OR of 3.5 indicates that sexual minority students of minority race/ethnicity experience higher odds of attempting suicide compared to their White counterparts.????
+**(c)** QN18 represents the percentage of students who ever saw someone get physically attacked, beaten, stabbed, or shot in their neighborhood. Sexual minority students experienced 1.59 times the odds of witnessing a physical attack, beat, or stabbing in their neighborhood(s) compared to heterosexual students. 
+
+**(d)** QN28 represents the percentage of students who attempted suicide. Overall, sexual minority students experienced 3.5 times the odds of attempting suicide compared to their heterosexual counterparts. 
+
+**(e)** QN30 represents the percentage of students who ever tried cigarette smoking. Based on Figure 13, sexual minority students experienced 1.76 times the odds of smoking/trying cigarette compared to their heterosexual counterparts. 
+
+**(f)** QN59 represents the percentage of students who had sexual intercourse with four or more persons during their life. Sexual minority students experienced 1.23 times the odds of having fur or more sexual partners compared to heterosexual students.
+
+**(g)** QN83 represents the percentage of students who were tested for a sexually transmitted disease (STD) other than HIV, such as chlamydia or gonorrhea. Overall, sexual minority students experienced 1.28 times the odds of getting tested for an STD compared to heterosexual students.
+
+**(h)** QN87 represents the percentage of students who usually did not sleep in their parent's or guardian's home. Based on Figure 13, sexual minority students experienced 1.68 times the odds of not sleeping in their parent/guardian's home compared to heterosexual students. 
+
 
 
 
